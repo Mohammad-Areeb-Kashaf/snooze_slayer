@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       title: 'Snooze Slayer',
       theme: ThemeData(fontFamily: 'Poppins'),
       darkTheme:
-          ThemeData.dark().copyWith(scaffoldBackgroundColor: Color(0xff161616)),
+          ThemeData.dark().copyWith(scaffoldBackgroundColor: Color(0xff141414)),
       themeMode: ThemeMode.dark,
       home: const MainScreen(),
     );
