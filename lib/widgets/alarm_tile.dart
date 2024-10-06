@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:snooze_slayer/models/alarm_model.dart';
 
 class AlarmTile extends StatefulWidget {
-  const AlarmTile({super.key});
+  const AlarmTile({super.key, required this.alarmData});
+
+  final Alarm alarmData;
 
   @override
   State<AlarmTile> createState() => _AlarmTileState();
 }
 
 class _AlarmTileState extends State<AlarmTile> {
-  bool isAlarmEnabled = true;
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -21,9 +22,7 @@ class _AlarmTileState extends State<AlarmTile> {
         borderRadius: BorderRadius.circular(8),
         child: InkWell(
           borderRadius: BorderRadius.circular(8),
-          onTap: () {
-            print("Button pressed");
-          },
+          onTap: () {},
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Column(
@@ -34,18 +33,25 @@ class _AlarmTileState extends State<AlarmTile> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        widget.alarmData.label != "none"
+                            ? Text(
+                                widget.alarmData.label.toString(),
+                                style: TextStyle(fontSize: 16),
+                              )
+                            : SizedBox.shrink(),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5.0, horizontal: 8.0),
                           child: Text(
-                            '7:00 AM',
-                            style: TextStyle(fontSize: 24),
+                            widget.alarmData.time.toString(),
+                            style: TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
                           ),
                         ),
                         Text(
-                          'Daily',
+                          widget.alarmData.repeat.toString(),
                           style: TextStyle(fontSize: 14),
                         ),
-                        SizedBox(height: 5),
                       ],
                     ),
                     Column(
@@ -53,10 +59,11 @@ class _AlarmTileState extends State<AlarmTile> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         FlutterSwitch(
-                          value: isAlarmEnabled,
+                          value:
+                              bool.parse(widget.alarmData.enabled.toString()),
                           onToggle: (bool value) {
                             setState(() {
-                              isAlarmEnabled = value;
+                              widget.alarmData.enabled = value;
                             });
                           },
                           activeColor: Color(0xff000000),
@@ -77,11 +84,21 @@ class _AlarmTileState extends State<AlarmTile> {
                           style: TextStyle(fontSize: 14),
                         ),
                         SizedBox(width: 10),
-                        SvgPicture.asset(
-                          'assets/icons/calculate.svg',
-                          height: 30,
-                          width: 30,
-                        )
+                        widget.alarmData.missions != null
+                            ? widget.alarmData.missions!.contains("Math")
+                                ? SvgPicture.asset(
+                                    'assets/icons/calculate.svg',
+                                    height: 30,
+                                    width: 30,
+                                  )
+                                : Icon(
+                                    Icons.close,
+                                    size: 30,
+                                  )
+                            : Icon(
+                                Icons.close,
+                                size: 30,
+                              )
                       ],
                     ),
                     PopupMenuButton(

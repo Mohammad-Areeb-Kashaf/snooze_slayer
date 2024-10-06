@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:snooze_slayer/models/alarm_model.dart';
 import 'package:snooze_slayer/widgets/alarm_tile.dart';
 
 class MainScreen extends StatefulWidget {
@@ -46,13 +47,15 @@ class _MainScreenState extends State<MainScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    AlarmTile(),
-                    AlarmTile(),
-                    AlarmTile(),
-                    AlarmTile(),
-                    AlarmTile(),
-                    AlarmTile(),
-                    AlarmTile(),
+                    AlarmTile(
+                        alarmData:
+                            Alarm(label: "Waking up", missions: ["Math"])),
+                    AlarmTile(alarmData: Alarm(missions: ["Math"])),
+                    AlarmTile(alarmData: Alarm(missions: ["Math"])),
+                    AlarmTile(alarmData: Alarm(missions: ["Math"])),
+                    AlarmTile(alarmData: Alarm()),
+                    AlarmTile(alarmData: Alarm()),
+                    AlarmTile(alarmData: Alarm()),
                   ],
                 )
               ],
