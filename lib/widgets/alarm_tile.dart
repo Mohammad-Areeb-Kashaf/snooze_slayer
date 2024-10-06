@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:get/get.dart';
 import 'package:snooze_slayer/models/alarm_model.dart';
+import 'package:snooze_slayer/pages/alarm_details_page.dart';
 
 class AlarmTile extends StatefulWidget {
   const AlarmTile({super.key, required this.alarmData});
@@ -15,6 +17,7 @@ class AlarmTile extends StatefulWidget {
 class _AlarmTileState extends State<AlarmTile> {
   @override
   Widget build(BuildContext context) {
+    final alarmData = widget.alarmData;
     return Padding(
       padding: const EdgeInsets.only(bottom: 10.0),
       child: Material(
@@ -22,7 +25,9 @@ class _AlarmTileState extends State<AlarmTile> {
         borderRadius: BorderRadius.circular(8),
         child: InkWell(
           borderRadius: BorderRadius.circular(8),
-          onTap: () {},
+          onTap: () {
+            Get.to(AlarmDetailsPage(alarmData: alarmData));
+          },
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Column(
@@ -33,9 +38,9 @@ class _AlarmTileState extends State<AlarmTile> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        widget.alarmData.label != "none"
+                        alarmData.label != "none"
                             ? Text(
-                                widget.alarmData.label.toString(),
+                                alarmData.label.toString(),
                                 style: TextStyle(fontSize: 16),
                               )
                             : SizedBox.shrink(),
@@ -43,13 +48,13 @@ class _AlarmTileState extends State<AlarmTile> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 5.0, horizontal: 8.0),
                           child: Text(
-                            widget.alarmData.time.toString(),
+                            alarmData.time.toString(),
                             style: TextStyle(
                                 fontSize: 24, fontWeight: FontWeight.bold),
                           ),
                         ),
                         Text(
-                          widget.alarmData.repeat.toString(),
+                          alarmData.repeat.toString(),
                           style: TextStyle(fontSize: 14),
                         ),
                       ],
@@ -59,11 +64,10 @@ class _AlarmTileState extends State<AlarmTile> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         FlutterSwitch(
-                          value:
-                              bool.parse(widget.alarmData.enabled.toString()),
+                          value: bool.parse(alarmData.enabled.toString()),
                           onToggle: (bool value) {
                             setState(() {
-                              widget.alarmData.enabled = value;
+                              alarmData.enabled = value;
                             });
                           },
                           activeColor: Color(0xff000000),
@@ -84,8 +88,8 @@ class _AlarmTileState extends State<AlarmTile> {
                           style: TextStyle(fontSize: 14),
                         ),
                         SizedBox(width: 10),
-                        widget.alarmData.missions != null
-                            ? widget.alarmData.missions!.contains("Math")
+                        alarmData.missions != null
+                            ? alarmData.missions!.contains("Math")
                                 ? SvgPicture.asset(
                                     'assets/icons/calculate.svg',
                                     height: 30,
