@@ -54,7 +54,12 @@ class _AlarmTileState extends State<AlarmTile> {
                           ),
                         ),
                         Text(
-                          alarmData.repeat.toString(),
+                          alarmData.repeat == alarmData.daysShort
+                              ? "Daily"
+                              : alarmData.repeat
+                                  .toString()
+                                  .replaceFirst("[", "")
+                                  .replaceFirst("]", ""),
                           style: TextStyle(fontSize: 14),
                         ),
                       ],

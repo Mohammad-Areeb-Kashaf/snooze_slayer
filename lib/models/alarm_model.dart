@@ -7,6 +7,7 @@ String alarmToMap(Alarm data) => json.encode(data.toMap());
 class Alarm {
   String? label;
   String? time;
+  List<String> daysShort = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
   List<String> days = [
     "Sunday",
     "Monday",
@@ -16,7 +17,7 @@ class Alarm {
     "Friday",
     "Saturday"
   ];
-  String? repeat;
+  List<String>? repeat;
   List<dynamic>? missions;
 
   bool enabled = true;
@@ -25,7 +26,7 @@ class Alarm {
   Alarm({
     this.label = "none",
     this.time = '03:50 PM',
-    this.repeat = "Daily",
+    this.repeat,
     this.missions,
     this.enabled = true,
     this.snooze,

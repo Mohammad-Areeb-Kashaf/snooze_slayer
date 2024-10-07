@@ -48,11 +48,19 @@ class _MainScreenState extends State<MainScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     AlarmTile(
+                        alarmData: Alarm(
+                            label: "Waking up",
+                            missions: ["Math"],
+                            repeat: ['SUN', 'SAT'])),
+                    AlarmTile(
                         alarmData:
-                            Alarm(label: "Waking up", missions: ["Math"])),
-                    AlarmTile(alarmData: Alarm(missions: ["Math"])),
-                    AlarmTile(alarmData: Alarm(missions: ["Math"])),
-                    AlarmTile(alarmData: Alarm(missions: ["Math"])),
+                            Alarm(missions: ["Math"], repeat: ['SUN', 'SAT'])),
+                    AlarmTile(
+                        alarmData:
+                            Alarm(missions: ["Math"], repeat: ['SUN', 'SAT'])),
+                    AlarmTile(
+                        alarmData:
+                            Alarm(missions: ["Math"], repeat: ['SUN', 'SAT'])),
                     AlarmTile(alarmData: Alarm()),
                     AlarmTile(alarmData: Alarm()),
                     AlarmTile(alarmData: Alarm()),
