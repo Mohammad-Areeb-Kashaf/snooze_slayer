@@ -35,7 +35,7 @@ class _AlarmDetailsPageState extends State<AlarmDetailsPage> {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                      color: Color(0xff242424),
+                      color: Theme.of(context).colorScheme.secondary,
                       borderRadius: BorderRadius.circular(8)),
                   child: Column(
                     children: [
@@ -49,14 +49,13 @@ class _AlarmDetailsPageState extends State<AlarmDetailsPage> {
                                 .parse(alarmData.time.toString())),
                         onChange: (time) {
                           alarmData.time = DateFormat("h:mm a").format(time);
-                          print(alarmData.time);
                         },
                         infiniteScroll: true,
                         centerWidget: DateTimePickerCenterWidget(
                           builder: (context, constraints, child) =>
-                              const DecoratedBox(
+                              DecoratedBox(
                             decoration: BoxDecoration(
-                              color: Color(0xff242424),
+                              color: Theme.of(context).colorScheme.primary,
                               border: Border(
                                 top: BorderSide(width: 3, color: Colors.white),
                                 bottom:
@@ -84,11 +83,12 @@ class _AlarmDetailsPageState extends State<AlarmDetailsPage> {
                       ListTile(
                         onTap: () {
                           showModalBottomSheet(
-                              context: context,
-                              builder: (BuildContext context) =>
-                                  RepeatDaysBottomSheet(
-                                    alarmData: alarmData,
-                                  ));
+                            context: context,
+                            builder: (BuildContext context) =>
+                                RepeatDaysBottomSheet(
+                              alarmData: alarmData,
+                            ),
+                          );
                           setState(() {});
                         },
                         title: Row(

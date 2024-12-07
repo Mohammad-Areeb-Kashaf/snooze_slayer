@@ -32,14 +32,14 @@ class _RepeatDaysBottomSheetState extends State<RepeatDaysBottomSheet> {
               physics: NeverScrollableScrollPhysics(),
               itemCount: alarmData.daysShort.length,
               itemBuilder: (BuildContext context, index) {
-                var itemEnabled =
+                alarmData.enabled =
                     alarmData.repeat!.contains(alarmData.daysShort[index]) ||
                         alarmData.repeat.toString() == "[Daily]";
                 return CheckboxListTile(
-                  value: itemEnabled,
+                  value: alarmData.enabled,
                   onChanged: (value) {
                     setState(() {
-                      itemEnabled = value!;
+                      alarmData.enabled = value!;
                     });
                     if (value != true) {
                       alarmData.repeat!
@@ -54,8 +54,6 @@ class _RepeatDaysBottomSheetState extends State<RepeatDaysBottomSheet> {
                         alarmData.daysShort.toString()) {
                       alarmData.repeat = ["Daily"];
                     }
-
-                    print(alarmData.repeat);
                   },
                   title: Text(alarmData.days[index]),
                 );
@@ -64,13 +62,17 @@ class _RepeatDaysBottomSheetState extends State<RepeatDaysBottomSheet> {
             SizedBox(height: 16),
             ElevatedButton(
               style: ButtonStyle(
-                  backgroundColor: WidgetStatePropertyAll(Color(0xff343434)),
+                  backgroundColor: WidgetStatePropertyAll(
+                      Theme.of(context).colorScheme.primary),
                   shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8)))),
               onPressed: () {
                 Get.back();
               },
-              child: Text('Done'),
+              child: Text(
+                'Done',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         ),

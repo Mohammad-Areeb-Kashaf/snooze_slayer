@@ -21,12 +21,12 @@ class _AlarmTileState extends State<AlarmTile> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10.0),
       child: Material(
-        color: Color(0xff242424),
+        color: Theme.of(context).colorScheme.secondary,
         borderRadius: BorderRadius.circular(8),
         child: InkWell(
           borderRadius: BorderRadius.circular(8),
           onTap: () {
-            Get.to(AlarmDetailsPage(alarmData: alarmData));
+            Get.to(() => AlarmDetailsPage(alarmData: alarmData));
           },
           child: Padding(
             padding: const EdgeInsets.all(10.0),
@@ -41,12 +41,15 @@ class _AlarmTileState extends State<AlarmTile> {
                         alarmData.label != "none"
                             ? Text(
                                 alarmData.label.toString(),
-                                style: TextStyle(fontSize: 16),
+                                style: TextStyle(
+                                  fontSize: 14,
+                                ),
                               )
                             : SizedBox.shrink(),
                         Padding(
                           padding: const EdgeInsets.symmetric(
-                              vertical: 5.0, horizontal: 8.0),
+                            vertical: 5.0,
+                          ),
                           child: Text(
                             alarmData.time.toString(),
                             style: TextStyle(
@@ -54,13 +57,17 @@ class _AlarmTileState extends State<AlarmTile> {
                           ),
                         ),
                         Text(
-                          alarmData.repeat == alarmData.daysShort
+                          alarmData.repeat.toString() ==
+                                  alarmData.daysShort.toString()
                               ? "Daily"
-                              : alarmData.repeat
-                                  .toString()
-                                  .replaceFirst("[", "")
-                                  .replaceFirst("]", ""),
-                          style: TextStyle(fontSize: 14),
+                              : alarmData.repeat == null
+                                  ? "One-time"
+                                  : alarmData.repeat
+                                      .toString()
+                                      .replaceFirst("[", "")
+                                      .replaceFirst("]", ""),
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w500),
                         ),
                       ],
                     ),
@@ -75,9 +82,12 @@ class _AlarmTileState extends State<AlarmTile> {
                               alarmData.enabled = value;
                             });
                           },
-                          activeColor: Color(0xff000000),
-                          inactiveColor: Color(0xff343434),
-                          inactiveToggleColor: Color(0xff444444),
+                          activeColor: Theme.of(context).colorScheme.primary,
+                          inactiveColor: Theme.of(context).colorScheme.surface,
+                          inactiveToggleColor:
+                              Theme.of(context).colorScheme.secondary,
+                          activeToggleColor:
+                              Theme.of(context).colorScheme.tertiary,
                         ),
                       ],
                     ),
