@@ -1,22 +1,16 @@
 import 'dart:convert';
-
-import 'package:hive/hive.dart';
-
-part 'alarm_model.g.dart';
+import 'package:objectbox/objectbox.dart';
 
 Alarm alarmFromMap(String str) => Alarm.fromMap(json.decode(str));
 
 String alarmToMap(Alarm data) => json.encode(data.toMap());
 
-@HiveType(typeId: 0, adapterName: "AlarmAdapter")
-class Alarm extends HiveObject {
-  @HiveField(0)
+@Entity()
+class Alarm {
+  int id = 0;
   String? label;
-  @HiveField(1)
   String? time;
-  @HiveField(2)
   List<String> daysShort = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-  @HiveField(3)
   List<String> days = [
     "Sunday",
     "Monday",
@@ -26,20 +20,16 @@ class Alarm extends HiveObject {
     "Friday",
     "Saturday"
   ];
-  @HiveField(4)
-  List<String>? repeat;
-  @HiveField(5)
+  List<String> repeat;
   List<String>? missions;
-
-  @HiveField(6)
   bool enabled = true;
-  @HiveField(7)
   Snooze? snooze;
 
   Alarm({
+    this.id = 0,
     this.label = "none",
     this.time = '03:50 PM',
-    this.repeat,
+    required this.repeat,
     this.missions,
     this.enabled = true,
     this.snooze,
@@ -52,9 +42,11 @@ class Alarm extends HiveObject {
         missions: List<String>.from(json["missions"].map((x) => x)),
         enabled: json["enabled"],
         snooze: Snooze.fromMap(json["snooze"]),
+        id: json['id'],
       );
 
   Map<String, dynamic> toMap() => {
+        "id": id,
         "label": label,
         "time": time,
         "repeat": repeat,
@@ -64,11 +56,8 @@ class Alarm extends HiveObject {
       };
 }
 
-@HiveType(typeId: 1, adapterName: "SnoozeAdapter")
 class Snooze {
-  @HiveField(0)
   final int minutes;
-  @HiveField(1)
   final int times;
 
   Snooze({

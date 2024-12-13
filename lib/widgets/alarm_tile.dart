@@ -60,12 +60,10 @@ class _AlarmTileState extends State<AlarmTile> {
                           alarmData.repeat.toString() ==
                                   alarmData.daysShort.toString()
                               ? "Daily"
-                              : alarmData.repeat == null
-                                  ? "One-time"
-                                  : alarmData.repeat
-                                      .toString()
-                                      .replaceFirst("[", "")
-                                      .replaceFirst("]", ""),
+                              : alarmData.repeat
+                                  .toString()
+                                  .replaceFirst("[", "")
+                                  .replaceFirst("]", ""),
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.w500),
                         ),
@@ -125,6 +123,10 @@ class _AlarmTileState extends State<AlarmTile> {
                         return [
                           PopupMenuItem(
                             child: Text('Delete'),
+                            onTap: () {
+                              // Get.find<AlarmController>()
+                              //     .deleteAlarm(alarmData);
+                            },
                           ),
                         ];
                       },

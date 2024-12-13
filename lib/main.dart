@@ -1,26 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:snooze_slayer/models/alarm_model.dart';
-import 'package:snooze_slayer/pages/main_screen.dart';
+import 'package:snooze_slayer/pages/main_page.dart';
+
+import 'helper/object_box.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
-  Hive.registerAdapter(AlarmAdapter());
-  Hive.registerAdapter(SnoozeAdapter());
-  await Hive.openBox<Alarm>("alarms");
+  await ObjectBox.init();
   runApp(const MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -49,13 +41,7 @@ class _MyAppState extends State<MyApp> {
       //   ),
       // ),
       // themeMode: ThemeMode.dark,
-      home: const MainScreen(),
+      home: const MainPage(),
     );
-  }
-
-  @override
-  void dispose() {
-    Hive.close();
-    super.dispose();
   }
 }

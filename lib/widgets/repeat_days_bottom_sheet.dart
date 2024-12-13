@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:snooze_slayer/models/alarm_model.dart';
 
 class RepeatDaysBottomSheet extends StatefulWidget {
-  @override
-  _RepeatDaysBottomSheetState createState() => _RepeatDaysBottomSheetState();
+  const RepeatDaysBottomSheet({super.key, required this.alarmData});
   final Alarm alarmData;
 
-  const RepeatDaysBottomSheet({super.key, required this.alarmData});
+  @override
+  State<RepeatDaysBottomSheet> createState() => _RepeatDaysBottomSheetState();
 }
 
 class _RepeatDaysBottomSheetState extends State<RepeatDaysBottomSheet> {
@@ -16,6 +17,16 @@ class _RepeatDaysBottomSheetState extends State<RepeatDaysBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final alarmData = widget.alarmData;
+    if (alarmData.repeat.toString() == "[Once]") {
+      alarmData.repeat.remove("Once");
+      print(alarmData.repeat.toString());
+      print("day: ${DateTime.now().weekday}");
+      alarmData.repeat.add(alarmData.daysShort[
+          DateFormat("h:mm a").parse(alarmData.time.toString()).weekday]);
+    } else if (alarmData.repeat.toString() == "[Daily]") {
+      alarmData.repeat.remove("Daily");
+      alarmData.repeat = alarmData.daysShort;
+    }
     return Container(
       padding: EdgeInsets.all(16),
       child: SingleChildScrollView(
@@ -32,27 +43,50 @@ class _RepeatDaysBottomSheetState extends State<RepeatDaysBottomSheet> {
               physics: NeverScrollableScrollPhysics(),
               itemCount: alarmData.daysShort.length,
               itemBuilder: (BuildContext context, index) {
-                alarmData.enabled =
-                    alarmData.repeat!.contains(alarmData.daysShort[index]) ||
-                        alarmData.repeat.toString() == "[Daily]";
+                List<bool> enabledRepeatDays = [];
+
+                enabledRepeatDays =
+                    List.generate(alarmData.daysShort.length, (index) {
+                  if (alarmData.repeat.contains(alarmData.daysShort[index]) ||
+                      alarmData.repeat == ["Daily"]) {
+                    return true;
+                  } else {
+                    return false;
+                  }
+                }, growable: false);
+
                 return CheckboxListTile(
-                  value: alarmData.enabled,
+                  value: enabledRepeatDays[index],
                   onChanged: (value) {
                     setState(() {
-                      alarmData.enabled = value!;
+                      enabledRepeatDays[index] = value!;
                     });
+
                     if (value != true) {
-                      alarmData.repeat!
-                          .remove(alarmData.daysShort.elementAt(index));
+                      setState(() {
+                        alarmData.repeat
+                            .remove(alarmData.daysShort.elementAt(index));
+                        enabledRepeatDays[index] = value!;
+                      });
                     } else {
-                      alarmData.repeat!.add(alarmData.daysShort[index]);
+                      setState(() {
+                        alarmData.repeat.add(alarmData.daysShort[index]);
+                        enabledRepeatDays[index] = value!;
+                      });
                     }
-                    alarmData.repeat!.sort((a, b) => alarmData.daysShort
-                        .indexOf(a)
-                        .compareTo(alarmData.daysShort.indexOf(b)));
+                    setState(() {
+                      alarmData.repeat.sort((a, b) => alarmData.daysShort
+                          .indexOf(a)
+                          .compareTo(alarmData.daysShort.indexOf(b)));
+                    });
                     if (alarmData.repeat.toString() ==
                         alarmData.daysShort.toString()) {
-                      alarmData.repeat = ["Daily"];
+                      setState(() {
+                        enabledRepeatDays = List.generate(6, (index) {
+                          return true;
+                        });
+                        alarmData.repeat = ["Daily"];
+                      });
                     }
                   },
                   title: Text(alarmData.days[index]),
