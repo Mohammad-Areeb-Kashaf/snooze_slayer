@@ -1,7 +1,8 @@
+import 'package:get/get.dart';
 import 'package:snooze_slayer/models/alarm_model.dart';
 import 'package:snooze_slayer/objectbox.g.dart';
 
-class ObjectBox {
+class ObjectBox extends GetxController {
   late final Store _store;
   late final Box<Alarm> alarmBox;
 
@@ -16,7 +17,10 @@ class ObjectBox {
 
   Alarm? getAlarm(int id) => alarmBox.get(id);
 
-  Stream<List<Alarm>> getAlarmsStream() => alarmBox.query().watch(triggerImmediately: true).map((query)=> query.find());
+  Stream<List<Alarm>> getAlarmsStream() => alarmBox
+      .query()
+      .watch(triggerImmediately: true)
+      .map((query) => query.find());
 
   int createAlarm(Alarm alarm) => alarmBox.put(alarm);
 

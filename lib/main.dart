@@ -4,9 +4,12 @@ import 'package:snooze_slayer/pages/main_page.dart';
 
 import 'helper/object_box.dart';
 
-void main() async {
+late ObjectBox objectBox;
+
+void main()  async {
   WidgetsFlutterBinding.ensureInitialized();
-  await ObjectBox.init();
+  objectBox = await ObjectBox.init();
+  Get.put(objectBox);
   runApp(const MyApp());
 }
 

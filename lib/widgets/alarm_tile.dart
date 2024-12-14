@@ -2,22 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
+import 'package:snooze_slayer/helper/object_box.dart';
 import 'package:snooze_slayer/models/alarm_model.dart';
 import 'package:snooze_slayer/pages/alarm_details_page.dart';
 
 class AlarmTile extends StatefulWidget {
-  const AlarmTile({super.key, required this.alarmData});
+  const AlarmTile({super.key, required this.id});
 
-  final Alarm alarmData;
+  final int id;
 
   @override
   State<AlarmTile> createState() => _AlarmTileState();
 }
 
 class _AlarmTileState extends State<AlarmTile> {
+  late ObjectBox objectBox;
+  late Alarm alarmData;
+
+  @override
+  void initState() {
+    super.initState();
+    objectBox = Get.find<ObjectBox>();
+    alarmData = objectBox.getAlarm(widget.id)!;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final alarmData = widget.alarmData;
     return Padding(
       padding: const EdgeInsets.only(bottom: 10.0),
       child: Material(
@@ -26,7 +36,7 @@ class _AlarmTileState extends State<AlarmTile> {
         child: InkWell(
           borderRadius: BorderRadius.circular(8),
           onTap: () {
-            Get.to(() => AlarmDetailsPage(alarmData: alarmData));
+            Get.to(() => AlarmDetailsPage(id: alarmData.id));
           },
           child: Padding(
             padding: const EdgeInsets.all(10.0),
@@ -124,8 +134,7 @@ class _AlarmTileState extends State<AlarmTile> {
                           PopupMenuItem(
                             child: Text('Delete'),
                             onTap: () {
-                              // Get.find<AlarmController>()
-                              //     .deleteAlarm(alarmData);
+                              objectBox.deleteAlarm(alarmData.id);
                             },
                           ),
                         ];
