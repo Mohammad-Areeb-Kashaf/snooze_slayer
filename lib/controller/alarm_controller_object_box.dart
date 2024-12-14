@@ -2,20 +2,36 @@ import 'package:get/get.dart';
 import 'package:snooze_slayer/models/alarm_model.dart';
 import 'package:snooze_slayer/objectbox.g.dart';
 
-class ObjectBox extends GetxController {
+class AlarmControllerObjectBox extends GetxController {
   late final Store _store;
   late final Box<Alarm> alarmBox;
+  final RxList<Alarm> alarms = <Alarm>[].obs;
 
-  ObjectBox._init(this._store) {
+  AlarmControllerObjectBox._init(this._store) {
     alarmBox = Box<Alarm>(_store);
   }
 
-  static Future<ObjectBox> init() async {
+  static Future<AlarmControllerObjectBox> init() async {
     final store = await openStore();
-    return ObjectBox._init(store);
+    return AlarmControllerObjectBox._init(store);
   }
 
-  Alarm? getAlarm(int id) => alarmBox.get(id);
+  @override
+  onInit() {
+    super.onInit();
+    getAlarms();
+  }
+
+  getAlarms() {
+    getAlarmsStream().listen((alarmItems) {
+      alarms.clear();
+      if (alarmItems.isNotEmpty) {
+        alarms.addAll(alarmItems);
+      }
+    });
+  }
+
+  Alarm getAlarm(int id) => alarms.firstWhere((alarm) => alarm.id == id);
 
   Stream<List<Alarm>> getAlarmsStream() => alarmBox
       .query()

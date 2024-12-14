@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:snooze_slayer/helper/object_box.dart';
+
+import '../controller/alarm_controller_object_box.dart';
+import '../models/alarm_model.dart';
 
 class RepeatDaysBottomSheet extends StatefulWidget {
   const RepeatDaysBottomSheet({super.key, required this.id});
@@ -11,108 +13,97 @@ class RepeatDaysBottomSheet extends StatefulWidget {
 }
 
 class _RepeatDaysBottomSheetState extends State<RepeatDaysBottomSheet> {
-  String? selectedRepeatOption;
+  late final AlarmControllerObjectBox alarmControllerObjectBox;
+  late final Alarm? alarmData;
+
+  @override
+  void initState() {
+    alarmControllerObjectBox = Get.find<AlarmControllerObjectBox>();
+    alarmData = alarmControllerObjectBox.getAlarm(widget.id);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final objectBox = Get.find<ObjectBox>();
-    final alarmData = objectBox.getAlarm(widget.id);
-    if (alarmData?.repeat.toString() == "[Once]") {
-      alarmData?.repeat.remove("Once");
-    } else if (alarmData?.repeat.toString() == "[Daily]") {
-      alarmData?.repeat.remove("Daily");
-      alarmData?.repeat = alarmData.daysShort;
-    }
+
     return BottomSheet(
-      builder: (context) => Container(
-        padding: EdgeInsets.all(16),
-        child: SingleChildScrollView(
+      builder: (context) => SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Center(
-                child: Text('Repeat',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              ),
-              SizedBox(height: 16),
-              SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: alarmData?.daysShort.length,
-                      itemBuilder: (BuildContext context, index) {
-                        List<bool> enabledRepeatDays = [];
-
-                        enabledRepeatDays =
-                            List.generate(alarmData!.daysShort.length, (index) {
-                          if (alarmData.repeat
-                                  .contains(alarmData.daysShort[index]) ||
-                              alarmData.repeat == ["Daily"]) {
-                            return true;
-                          } else {
-                            return false;
-                          }
-                        }, growable: false);
-
-                        return CheckboxListTile(
-                          value: enabledRepeatDays[index],
-                          onChanged: (value) {
-                            setState(() {
-                              enabledRepeatDays[index] = value!;
-                              if (value == true) {
-                                alarmData.repeat
-                                    .add(alarmData.daysShort[index]);
-                              } else {
-                                alarmData.repeat
-                                    .remove(alarmData.daysShort[index]);
-                              }
-                            });
-
-                            if (value != true) {
-                              setState(() {
-                                alarmData.repeat.remove(
-                                    alarmData.daysShort.elementAt(index));
-                                enabledRepeatDays[index] = value!;
-                              });
-                            } else {
-                              setState(() {
-                                alarmData.repeat
-                                    .add(alarmData.daysShort[index]);
-                                enabledRepeatDays[index] = value!;
-                              });
+              // Center(
+              //   child: Text(
+              //     'Repeat',
+              //     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              //   ),
+              // ),
+              // SizedBox(height: 16),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: alarmData?.daysShort.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return CheckboxListTile(
+                        value: alarmData!.repeat.contains("Daily") ||
+                            alarmData!.repeat
+                                .contains(alarmData?.daysShort[index]),
+                        onChanged: (value) {
+                          setState(() {
+                            if (alarmData!.repeat.contains("Once")) {
+                              alarmData!.repeat.remove("Once");
                             }
-                            setState(() {
-                              alarmData.repeat.sort((a, b) => alarmData
+                            if (value!) {
+                              alarmData!.repeat
+                                  .add(alarmData!.daysShort[index]);
+                              if (alarmData!.repeat.length ==
+                                  alarmData!.daysShort.length) {
+                                alarmData!.repeat = ["Daily"];
+                              }
+                            } else {
+                              alarmData!.repeat
+                                  .remove(alarmData!.daysShort[index]);
+                              if (alarmData!.repeat.isEmpty) {
+                                alarmData!.repeat.add("Once");
+                              } else if (alarmData!.repeat.contains("Daily")) {
+                                alarmData!.repeat.remove("Daily");
+                                alarmData?.repeat.addAll(alarmData!.daysShort);
+                                alarmData!.repeat
+                                    .remove(alarmData!.daysShort[index]);
+                              }
+                            }
+                
+                            // Sort the list if it's not "Daily" or "Once"
+                            if (alarmData!.repeat.length > 1 &&
+                                !alarmData!.repeat.contains("Daily") &&
+                                !alarmData!.repeat.contains("Once")) {
+                              alarmData!.repeat.sort((a, b) => alarmData!
                                   .daysShort
                                   .indexOf(a)
-                                  .compareTo(alarmData.daysShort.indexOf(b)));
-                            });
-                            if (alarmData.repeat.toString() ==
-                                alarmData.daysShort.toString()) {
-                              setState(() {
-                                alarmData.repeat = ["Daily"];
-                              });
+                                  .compareTo(alarmData!.daysShort.indexOf(b)));
                             }
-                          },
-                          title: Text(alarmData.days[index]),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+                          });
+                        },
+                        title: Text(alarmData!.days[index]),
+                      );
+                    },
+                  ),
+                ],
               ),
               SizedBox(height: 16),
               ElevatedButton(
                 style: ButtonStyle(
-                    backgroundColor: WidgetStatePropertyAll(
-                        Theme.of(context).colorScheme.primary),
-                    shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)))),
+                  backgroundColor: WidgetStatePropertyAll(
+                      Theme.of(context).colorScheme.primary),
+                  shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8))),
+                ),
                 onPressed: () {
+                  alarmControllerObjectBox.updateAlarm(alarmData!);
                   Get.back();
                 },
                 child: Text(
@@ -125,11 +116,9 @@ class _RepeatDaysBottomSheetState extends State<RepeatDaysBottomSheet> {
         ),
       ),
       onClosing: () {
-        setState(() {
-          var lastAlarm = objectBox.getAlarm(alarmData!.id);
-          alarmData.repeat = lastAlarm!.repeat;
-          objectBox.updateAlarm(alarmData);
-        });
+        var lastAlarm = alarmControllerObjectBox.getAlarm(alarmData!.id);
+        alarmData?.repeat = lastAlarm.repeat;
+        alarmControllerObjectBox.updateAlarm(alarmData!);
       },
     );
   }

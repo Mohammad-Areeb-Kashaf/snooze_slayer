@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:snooze_slayer/helper/object_box.dart';
 import 'package:snooze_slayer/models/alarm_model.dart';
 import 'package:snooze_slayer/widgets/alarm_tile.dart';
+
+import '../controller/alarm_controller_object_box.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -12,16 +13,8 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  bool isAlarmEnabled = true;
-  late ObjectBox objectBox;
-  late Stream<List<Alarm>> streamAlarms;
-
-  @override
-  void initState() {
-    super.initState();
-    objectBox = Get.find<ObjectBox>();
-    streamAlarms = objectBox.getAlarmsStream();
-  }
+  final AlarmControllerObjectBox alarmControllerObjectBox =
+      Get.find<AlarmControllerObjectBox>();
 
   @override
   Widget build(BuildContext context) {
@@ -39,23 +32,22 @@ class _MainPageState extends State<MainPage> {
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
                 ),
                 SizedBox(height: 10),
-                StreamBuilder(
-                  stream: streamAlarms,
-                  builder: (context, snapshot) {
-                    final alarms = snapshot.data;
-                    return alarms?.isNotEmpty == true
-                        ? Column(
+                Obx(() {
+                  final alarms = alarmControllerObjectBox.alarms;
+                  return alarms.isNotEmpty
+                      ? Column(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               ListView.builder(
                                   shrinkWrap: true,
                                   physics: NeverScrollableScrollPhysics(),
-                                  itemCount: alarms?.length,
+                              itemCount: alarms.length,
                                   itemBuilder: (context, alarmItemIndex) {
                                     return AlarmTile(
-                                        id: alarms![alarmItemIndex].id);
-                                  })
+                                        id: alarms[alarmItemIndex].id);
+                              },
+                            ),
                             ],
                           )
                         : Column(
@@ -70,8 +62,8 @@ class _MainPageState extends State<MainPage> {
                               ),
                             ],
                           );
-                  },
-                ),
+
+                }),
               ],
             ),
           ),
@@ -79,7 +71,7 @@ class _MainPageState extends State<MainPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          objectBox.createAlarm(Alarm(
+          alarmControllerObjectBox.createAlarm(Alarm(
             label: "Alarm Label",
             time: '04:00 AM',
             repeat: ["Once"],

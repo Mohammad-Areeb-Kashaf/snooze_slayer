@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snooze_slayer/pages/main_page.dart';
 
-import 'helper/object_box.dart';
+import 'controller/alarm_controller_object_box.dart';
 
-late ObjectBox objectBox;
+late AlarmControllerObjectBox alarmControllerObjectBox;
 
 void main()  async {
   WidgetsFlutterBinding.ensureInitialized();
-  objectBox = await ObjectBox.init();
-  Get.put(objectBox);
+  alarmControllerObjectBox = await AlarmControllerObjectBox.init();
+  Get.put(alarmControllerObjectBox);
   runApp(const MyApp());
 }
 
