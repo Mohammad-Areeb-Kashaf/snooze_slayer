@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:snooze_slayer/models/alarm_model.dart';
 import 'package:snooze_slayer/widgets/alarm_tile.dart';
+import 'package:snooze_slayer/widgets/scaffold_background.dart';
 
 import '../controller/alarm_controller_object_box.dart';
 
@@ -18,36 +19,37 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 50),
-                Text(
-                  'Ring in 15hr 49min',
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
-                ),
-                SizedBox(height: 10),
-                Obx(() {
-                  final alarms = alarmControllerObjectBox.alarms;
-                  return alarms.isNotEmpty
-                      ? Column(
+    return ScaffoldBackground(
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 50),
+                  Text(
+                    'Ring in 15hr 49min',
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+                  ),
+                  SizedBox(height: 10),
+                  Obx(() {
+                    final alarms = alarmControllerObjectBox.alarms;
+                    return alarms.isNotEmpty
+                        ? Column(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                              itemCount: alarms.length,
-                                  itemBuilder: (context, alarmItemIndex) {
-                                    return AlarmTile(
-                                        id: alarms[alarmItemIndex].id);
-                              },
-                            ),
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: alarms.length,
+                                itemBuilder: (context, alarmItemIndex) {
+                                  return AlarmTile(
+                                      id: alarms[alarmItemIndex].id);
+                                },
+                              ),
                             ],
                           )
                         : Column(
@@ -62,23 +64,23 @@ class _MainPageState extends State<MainPage> {
                               ),
                             ],
                           );
-
-                }),
-              ],
+                  }),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          alarmControllerObjectBox.createAlarm(Alarm(
-            label: "Alarm Label",
-            time: '04:00 AM',
-            repeat: ["Once"],
-            enabled: true,
-          ));
-        },
-        child: Icon(Icons.add),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            alarmControllerObjectBox.createAlarm(Alarm(
+              label: "Alarm Label",
+              time: '04:00 AM',
+              repeat: ["Once"],
+              enabled: true,
+            ));
+          },
+          child: Icon(Icons.add),
+        ),
       ),
     );
   }

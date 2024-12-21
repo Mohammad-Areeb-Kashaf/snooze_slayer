@@ -28,7 +28,7 @@ class _AlarmTileState extends State<AlarmTile> {
         alarmControllerObjectBox = Get.find<AlarmControllerObjectBox>();
         alarmData = alarmControllerObjectBox.getAlarm(widget.id);
         return Material(
-          color: Theme.of(context).colorScheme.secondary,
+          color: Theme.of(context).colorScheme.tertiary,
           borderRadius: BorderRadius.circular(8),
           child: InkWell(
             borderRadius: BorderRadius.circular(8),
