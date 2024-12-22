@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:snooze_slayer/controller/theme_controller.dart';
 import 'package:snooze_slayer/models/alarm_model.dart';
 import 'package:snooze_slayer/widgets/alarm_tile.dart';
 import 'package:snooze_slayer/widgets/scaffold_background.dart';
@@ -78,6 +79,8 @@ class _MainPageState extends State<MainPage> {
               repeat: ["Once"],
               enabled: true,
             ));
+            final themeController = Get.find<ThemeController>();
+            themeController.changeThemeMode();
           },
           child: Icon(Icons.add),
         ),
