@@ -12,7 +12,7 @@ class ScaffoldBackground extends StatelessWidget {
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primary,
             image: DecorationImage(
-              image: AssetImage('assets/images/background_dark.png'),
+              image: AssetImage(Theme.of(context).brightness == Brightness.dark ? 'assets/images/background_dark.png': 'assets/images/background_light.png'),
               fit: BoxFit.cover,
             ),
           ),

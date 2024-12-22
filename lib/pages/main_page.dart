@@ -81,6 +81,15 @@ class _MainPageState extends State<MainPage> {
           },
           child: Icon(Icons.add),
         ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.shifting,
+          items: [
+            BottomNavigationBarItem(icon: Icon(Icons.alarm), label: 'Alarm'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.settings), label: 'Settings'),
+          ],
+        ),
       ),
     );
   }
