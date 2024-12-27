@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
+import 'package:snooze_slayer/constants.dart';
+import 'package:snooze_slayer/controller/theme_controller.dart';
 import 'package:snooze_slayer/models/alarm_model.dart';
 import 'package:snooze_slayer/pages/alarm_details_page.dart';
 
@@ -19,6 +21,7 @@ class AlarmTile extends StatefulWidget {
 class _AlarmTileState extends State<AlarmTile> {
   late AlarmControllerObjectBox alarmControllerObjectBox;
   late Alarm alarmData;
+  late ThemeController themeController;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +30,7 @@ class _AlarmTileState extends State<AlarmTile> {
       child: Obx(() {
         alarmControllerObjectBox = Get.find<AlarmControllerObjectBox>();
         alarmData = alarmControllerObjectBox.getAlarm(widget.id);
+        themeController = Get.find<ThemeController>();
         return Material(
           color: Theme.of(context).colorScheme.tertiary,
           borderRadius: BorderRadius.circular(8),
@@ -45,7 +49,7 @@ class _AlarmTileState extends State<AlarmTile> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          alarmData.label != "none"
+                          alarmData.label != "null"
                               ? Text(
                                   alarmData.label.toString(),
                                   style: TextStyle(
@@ -80,20 +84,38 @@ class _AlarmTileState extends State<AlarmTile> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          FlutterSwitch(
-                            value: bool.parse(alarmData.enabled.toString()),
-                            onToggle: (bool value) {
-                              setState(() {
-                                alarmData.enabled = value;
-                              });
-                            },
-                            activeColor: Theme.of(context).colorScheme.primary,
-                            inactiveColor:
-                                Theme.of(context).colorScheme.surface,
-                            inactiveToggleColor:
-                                Theme.of(context).colorScheme.secondary,
-                            activeToggleColor:
-                                Theme.of(context).colorScheme.tertiary,
+                          ValueListenableBuilder(
+                              valueListenable: themeController.notifier,
+                              builder: (_, mode, __) {
+                                return FlutterSwitch(
+                                  value:
+                                      bool.parse(alarmData.enabled.toString()),
+                                  onToggle: (bool value) {
+                                    setState(() {
+                                      alarmData.enabled = value;
+                                    });
+                                  },
+                                  activeToggleColor: mode == ThemeMode.light
+                                      ? kLightTextColor
+                                      : kDarkTextColor,
+                                  inactiveToggleColor:
+                                    mode == ThemeMode.light
+                                      ? kDarkTextColor
+                                      : kLightTextColor,
+                                  inactiveColor: mode == ThemeMode.light
+                                      ? kLightToggleColor
+                                      : kDarkToggleColor,
+                                  activeColor: mode == ThemeMode.light
+                                      ? kDarkToggleColor
+                                      : kLightFrameColor,
+                                  activeIcon: Icon(
+                                    Icons.done,
+                                    color: mode == ThemeMode.light
+                                        ? kDarkTextColor
+                                        : kLightTextColor,
+                                  ),
+                                );
+                              }
                           ),
                         ],
                       ),

@@ -27,7 +27,7 @@ class Alarm {
 
   Alarm({
     this.id = 0,
-    this.label = "none",
+    this.label = "null",
     this.time = '03:50 PM',
     required this.repeat,
     this.missions,
