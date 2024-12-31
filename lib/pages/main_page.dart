@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:snooze_slayer/constants.dart';
 import 'package:snooze_slayer/controller/theme_controller.dart';
 import 'package:snooze_slayer/models/alarm_model.dart';
 import 'package:snooze_slayer/widgets/alarm_tile.dart';
@@ -17,6 +18,8 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   final AlarmControllerObjectBox alarmControllerObjectBox =
       Get.find<AlarmControllerObjectBox>();
+  final ThemeController themeController = Get.find<ThemeController>();
+  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +27,8 @@ class _MainPageState extends State<MainPage> {
       child: Scaffold(
         body: SingleChildScrollView(
           child: SafeArea(
-            child: Padding(
+            child: selectedIndex == 0
+                ? Padding(
               padding: const EdgeInsets.all(10.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,30 +72,63 @@ class _MainPageState extends State<MainPage> {
                   }),
                 ],
               ),
+                  )
+                : Center(
+                    child: Text('Settings'),
             ),
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            alarmControllerObjectBox.createAlarm(Alarm(
-              label: "Alarm Label",
-              time: '04:00 AM',
-              repeat: ["Once"],
-              enabled: true,
-            ));
-            final themeController = Get.find<ThemeController>();
-            themeController.changeThemeMode();
-          },
-          child: Icon(Icons.add),
+        floatingActionButton: ValueListenableBuilder(
+            valueListenable: themeController.notifier,
+            builder: (context, _, __) {
+              return FloatingActionButton(
+                backgroundColor: kMainActiveColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                  side: BorderSide(
+                      width: 4,
+                      color: themeController.notifier.value == ThemeMode.light
+                          ? kLightPrimaryColor
+                          : kDarkPrimaryColor),
+                ),
+                onPressed: () {
+                  // alarmControllerObjectBox.createAlarm(Alarm(
+                  //   label: "Alarm Label",
+                  //   time: '04:00 AM',
+                  //   repeat: ["Once"],
+                  //   enabled: true,
+                  // ));
+                  final themeController = Get.find<ThemeController>();
+                  themeController.changeThemeMode();
+                },
+                child: Icon(
+                  Icons.add_circle_outline,
+                  size: 34,
+                ),
+              );
+            }
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.shifting,
-          items: [
-            BottomNavigationBarItem(icon: Icon(Icons.alarm), label: 'Alarm'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.settings), label: 'Settings'),
-          ],
+        bottomNavigationBar: ValueListenableBuilder(
+            valueListenable: themeController.notifier,
+            builder: (context, _, __) {
+              return BottomNavigationBar(
+                onTap: (value) => setState(() => selectedIndex = value),
+                currentIndex: selectedIndex,
+                selectedItemColor: kMainActiveColor,
+                unselectedItemColor:
+                    themeController.notifier.value == ThemeMode.light
+                        ? kMainTextColor
+                        : kDarkTextColor,
+                type: BottomNavigationBarType.fixed,
+                items: [
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.alarm), label: 'Alarm'),
+                  BottomNavigationBarItem(
+                      icon: Icon(Icons.settings), label: 'Settings'),
+                ],
+              );
+            }
         ),
       ),
     );
